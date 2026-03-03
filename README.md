@@ -82,6 +82,8 @@ The **Azure RBAC Advisor** is a GitHub Copilot custom agent defined in `.github/
 
 > **Tip:** Run `copilot --experimental` to enable Autopilot mode, which lets the agent work through complex cross-resource questions uninterrupted.
 
+> **Note:** Once you select a custom agent, it remains active for the duration of that chat session. To return to the default Copilot agent, start a new chat.
+
 #### VS Code Copilot Chat
 
 1. Open GitHub Copilot Chat (`Ctrl+Alt+I` / `Cmd+Alt+I`)
@@ -205,6 +207,22 @@ All RBAC role information in this library is drawn from official Microsoft docum
 | Azure Resource Provider Operations | https://learn.microsoft.com/azure/role-based-access-control/resource-provider-operations |
 | Microsoft Entra ID Roles | https://learn.microsoft.com/entra/identity/role-based-access-control/permissions-reference |
 | Azure Landing Zones | https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/ |
+
+---
+
+## First-Time Setup
+
+After cloning this repository, run the setup script to create the `log/` and `answer/` runtime directories used by the Azure RBAC Advisor agent:
+
+```bash
+# Option 1 — shell script
+bash setup.sh
+
+# Option 2 — make
+make setup
+```
+
+These directories are excluded from git (via `.gitignore`) but must exist locally for the agent to write prompt logs and answer files.
 
 ---
 
