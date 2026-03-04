@@ -59,6 +59,13 @@ Grounding with Bing Search is an Azure resource that enables Azure OpenAI and Az
 | **Azure AI Agents Service** | Configure `BingGroundingTool` in agent | API key via agent connection |
 | **Custom application** | Call Bing Search API directly, pass results to LLM | API key in `Ocp-Apim-Subscription-Key` header |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure OpenAI](./azure-openai.md) or [Azure AI Foundry](./azure-ai-foundry.md) | `Microsoft.CognitiveServices/accounts` / `Microsoft.MachineLearningServices/workspaces` | The primary consumer service that issues grounding queries to Bing Search at runtime; Grounding with Bing Search has no value without a connected LLM consumer. | Required |
+| [Azure Key Vault](../workload-landing-zone/azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores the Bing Search API key securely; the consuming application or AI Foundry connection retrieves it at runtime using managed identity. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **No Entra ID data-plane roles** — Bing Search resources use API key-based authentication for all data plane operations. No `Microsoft.Bing` data-plane RBAC roles exist.

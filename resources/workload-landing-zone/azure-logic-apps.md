@@ -87,6 +87,16 @@ Azure Logic Apps is a cloud-based integration platform for building automated wo
 | `Logic App Operator` | ❌ | ✅ | ✅ | ❌ |
 | `Logic App Reader` | ❌ | ❌ | ✅ (read-only) | ❌ |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Storage Account](./azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Stores workflow run state, trigger checkpoints, and action history for Standard Logic Apps; required for Standard hosting. Consumption Logic Apps use Microsoft-managed storage. | Required (Standard) / Not applicable (Consumption) |
+| [App Service Plan](./app-service-plan.md) | `Microsoft.Web/serverfarms` | Provides the compute for Standard Logic Apps (`Microsoft.Web/sites` kind `workflowapp`); must be a WS1, WS2, or WS3 Workflow Standard SKU. | Required (Standard) / Not applicable (Consumption) |
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Resolves Key Vault References in application settings for Standard Logic Apps at runtime; the Logic App's managed identity needs `Key Vault Secrets User`. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives diagnostic logs (workflow run history, trigger/action telemetry) via Diagnostic Settings or Application Insights integration. | Optional |
+| [Spoke Virtual Network](./spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides VNet Integration for Standard Logic Apps and Private Endpoint for inbound-only access; not supported for Consumption Logic Apps. | Optional (Standard only) |
+
 ## Notes / Considerations
 
 - **Consumption vs. Standard**: Consumption uses `Logic App Contributor`/`Operator`/`Reader` roles under `Microsoft.Logic`; Standard uses `Website Contributor`/`Web Plan Contributor` under `Microsoft.Web` (identical to App Service/Functions RBAC).

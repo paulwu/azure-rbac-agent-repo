@@ -70,6 +70,12 @@ Azure Managed Identities provide an automatically managed identity in Microsoft 
 | Policy remediation identity | User-assigned | `Managed Identity Operator` to Azure Policy | Policy assignment references the identity for `DeployIfNotExists` remediation |
 | Automation Account runbooks | System-assigned or User-assigned | `Managed Identity Operator` for assignment | Identity needs roles on managed resources (e.g., `Contributor` on target subscriptions) |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Microsoft Entra ID](https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview) | N/A (platform service) | Issues and manages the Entra ID service principal backing every managed identity; all token issuance and authentication flows go through Entra ID at runtime. | Required |
+
 ## Notes / Considerations
 
 - **`Managed Identity Contributor`** creates and deletes identities but **cannot assign them to resources** — use `Managed Identity Operator` for assignment operations.

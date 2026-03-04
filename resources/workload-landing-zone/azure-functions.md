@@ -74,6 +74,16 @@ Azure Functions is a serverless compute service for running event-driven code wi
 | **Premium (EP1-EP3)** | Auto (pre-warmed, no cold start) | ✅ | `Website Contributor` (+ `Web Plan Contributor` for plan) |
 | **Dedicated (App Service Plan)** | Manual / autoscale rules | ✅ | `Website Contributor` (+ `Web Plan Contributor` for plan) |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Storage Account](./azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Stores function runtime state, trigger checkpoints, function keys, and Durable Functions orchestration history; required for all hosting plans. | Required |
+| [App Service Plan](./app-service-plan.md) | `Microsoft.Web/serverfarms` | Provides the dedicated or premium compute hosting the Function App; required for Premium and Dedicated plans. Consumption and Flex Consumption plans create their own hidden plan. | Required (Premium/Dedicated) / Auto-created (Consumption) |
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Resolves Key Vault References in application settings at runtime; the Function App's managed identity must have `Key Vault Secrets User` on the vault. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Application Insights telemetry (invocations, exceptions, traces) when Application Insights is configured via `APPLICATIONINSIGHTS_CONNECTION_STRING`. | Optional (strongly recommended) |
+| [Spoke Virtual Network](./spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides outbound VNet Integration and inbound Private Endpoint for network-isolated deployments; required for Premium and Dedicated plans with VNet integration. | Optional |
+
 ## Notes / Considerations
 
 - **`Website Contributor`** is the primary management role for Function Apps — it covers code deployment, app settings, function key management, and slot operations.

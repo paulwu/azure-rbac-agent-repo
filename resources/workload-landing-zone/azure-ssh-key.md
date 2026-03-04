@@ -47,6 +47,12 @@ Azure SSH Key is an ARM resource that stores SSH public keys for use with Linux 
 | Reference SSH Key when creating a VM | SSH Key resource + VM Resource Group | `Reader` on SSH Key + `Virtual Machine Contributor` on VM RG | `Reader` on the SSH Key is sufficient to reference it during VM creation. |
 | View public key value | SSH Key resource | `Reader` | Public keys are not sensitive — `Reader` is appropriate. |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Virtual Machines](./virtual-machines.md) | `Microsoft.Compute/virtualMachines` | The SSH Key resource is referenced at VM provisioning time to inject the public key into the VM's `authorized_keys`; the key has no runtime function independent of a VM. | Required (to be consumed) |
+
 ## Notes / Considerations
 
 - **No narrow built-in role** exists for `Microsoft.Compute/sshPublicKeys` — use `Contributor` scoped to the resource group or specific SSH Key resource. A custom role with `Microsoft.Compute/sshPublicKeys/*` actions can be created for tighter control.

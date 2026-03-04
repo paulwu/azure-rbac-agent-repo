@@ -75,6 +75,15 @@ Azure AI Document Intelligence (formerly Form Recognizer) is a cloud-based AI se
 | **Contract** | Contract clause and field extraction | `Cognitive Services User` |
 | **Custom** | User-trained extraction model | `Cognitive Services User` (inference) / `Cognitive Services Contributor` (training) |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Storage Account](../workload-landing-zone/azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Stores training documents and labeled data for custom model training; required when building or retraining custom or composed models. | Required (custom models) / Optional (pre-built models) |
+| [Azure Key Vault](../workload-landing-zone/azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores API keys and endpoint URLs when Entra ID auth is not used; also used by consuming applications to retrieve credentials at runtime. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives diagnostic logs and metrics via Diagnostic Settings for monitoring analysis requests and errors. | Optional |
+| [Spoke Virtual Network](../workload-landing-zone/spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides Private Endpoint connectivity to prevent document content from traversing the public internet. | Optional (recommended) |
+
 ## Notes / Considerations
 
 - **`Cognitive Services User`** is the minimum role for all document analysis (inference) operations — assign to application managed identities.

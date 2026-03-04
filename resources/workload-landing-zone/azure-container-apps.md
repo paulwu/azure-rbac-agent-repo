@@ -63,6 +63,15 @@ Azure Container Apps is a serverless container platform for running microservice
 | Access app console (exec) | Container App | `Contributor` | Interactive container console for debugging. |
 | Configure volume mounts (Azure Files) | Container App + Storage | `Contributor` | Storage mounts are configured at the environment level. |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Container Apps Environment](./azure-container-apps-environment.md) | `Microsoft.App/managedEnvironments` | The shared runtime boundary in which the Container App executes; must exist before deploying any Container App. | Required |
+| [Azure Container Registry](./azure-container-registry.md) | `Microsoft.ContainerRegistry/registries` | Stores and serves the container images pulled by Container Apps at deployment and scale-out; required when using private container images. | Required (private images) / Optional (public images) |
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Provides secrets via Key Vault references in app settings and TLS certificates for custom domains; the app's managed identity must have `Key Vault Secrets User` at runtime. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives container console logs and system event logs through the parent Container Apps Environment; required indirectly via the environment. | Required (via environment) |
+
 ## Notes / Considerations
 
 - **No narrow built-in role** exists for `Microsoft.App/containerApps` — use `Contributor` scoped to the specific Container App or resource group. A custom role with only `Microsoft.App/containerApps/*` actions can be created for tighter control.

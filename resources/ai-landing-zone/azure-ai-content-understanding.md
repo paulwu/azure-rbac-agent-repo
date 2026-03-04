@@ -63,6 +63,15 @@ Azure AI Content Understanding *(preview)* is a multimodal AI service that analy
 | **Audio** (WAV, MP3, etc.) | Transcription, speaker identification, summarization | `Cognitive Services User` |
 | **Video** (MP4, etc.) | Scene detection, transcription, visual analysis | `Cognitive Services User` |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Storage Account](../workload-landing-zone/azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Stores input documents, images, audio, or video files that Content Understanding reads from Azure Blob Storage during analysis. | Optional (inline submission supported) |
+| [Azure Key Vault](../workload-landing-zone/azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores API keys when Entra ID authentication is not used; accessed at runtime by consuming applications. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives diagnostic logs and metrics via Diagnostic Settings for monitoring analysis requests and service health. | Optional |
+| [Spoke Virtual Network](../workload-landing-zone/spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides Private Endpoint connectivity to prevent sensitive content from traversing the public internet. | Optional (recommended) |
+
 ## Notes / Considerations
 
 - **Preview service** — Azure AI Content Understanding is currently in preview. Role support, API surface, and capabilities may change before GA.

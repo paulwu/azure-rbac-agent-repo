@@ -77,6 +77,16 @@ Azure Recovery Services Vault is a storage entity that holds backup data and rec
 | `Site Recovery Operator` | ❌ | ❌ | ❌ | ❌ | ✅ |
 | `Site Recovery Reader` | ❌ | ❌ | ❌ | ❌ | ❌ (view only) |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Log Analytics Workspace](./log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives backup job logs, alert notifications, and diagnostic data via Diagnostic Settings for centralized backup reporting and alerting. | Optional (strongly recommended) |
+| [Azure Monitor](./azure-monitor.md) | `Microsoft.Insights` | Provides backup alerts, metrics, and dashboards for vault health and job status monitoring. | Optional |
+| [Hub Virtual Network](./hub-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Hosts the Private Endpoint for the vault, ensuring backup and replication traffic stays within the VNet and does not traverse the public internet. | Optional (strongly recommended) |
+| [Private DNS Zones](./private-dns-zones.md) | `Microsoft.Network/privateDnsZones` | Resolves the vault's private endpoint hostname (`privatelink.*.backup.windowsazure.com`) within the VNet for private backup connectivity. | Required (if Private Endpoint enabled) |
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores customer-managed encryption keys for vault data when CMK encryption is configured. | Optional |
+
 ## Notes / Considerations
 
 - **`Backup Contributor`** is the primary management role — it covers vault creation, policy management, and backup operations but does NOT manage Site Recovery.

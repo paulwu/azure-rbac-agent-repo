@@ -55,6 +55,15 @@ Azure Container Apps Environment is the secure boundary and shared infrastructur
 | View environment logs | Log Analytics Workspace | `Log Analytics Reader` | Logs are stored in the connected Log Analytics workspace. |
 | Configure Private Endpoint | Container Apps Environment + VNet | `Contributor` + `Network Contributor` | Internal-only environments restrict ingress to the VNet. |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Collects system logs and metrics from all Container Apps running in the environment; must be specified at environment creation time and cannot be changed afterward. | Required |
+| [Spoke Virtual Network](./spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides a dedicated subnet with `Microsoft.App/environments` delegation for VNet-injected environments; required for internal-only or network-isolated environments. | Required (VNet-injected) / Optional (consumption-only) |
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores TLS certificates for custom domains and Dapr component secrets; the environment's managed identity accesses it at runtime. | Optional |
+| [Azure Storage Account](./azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Provides Azure Files persistent storage mounts configured at the environment level and shared across Container Apps. | Optional |
+
 ## Notes / Considerations
 
 - **No narrow built-in role** exists for `Microsoft.App/managedEnvironments` — use `Contributor` scoped to the specific environment or resource group to limit blast radius.

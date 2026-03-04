@@ -70,6 +70,16 @@ Azure Virtual Machines provide IaaS compute in the workload landing zone. VMs ar
 
 > **Note**: `Virtual Machine Administrator Login` and `Virtual Machine User Login` only apply to VMs with Entra ID login extension installed. For VMs using local credentials, these roles have no effect — the user needs the password/key.
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Spoke Virtual Network](./spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides the subnet to which the VM's Network Interface Card (NIC) is attached; a VM cannot be created without a target virtual network and subnet. | Required |
+| [Network Security Groups](./network-security-groups.md) | `Microsoft.Network/networkSecurityGroups` | Controls inbound and outbound traffic to the VM's NIC or subnet; strongly recommended to restrict access. | Optional (strongly recommended) |
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores disk encryption keys (Azure Disk Encryption or Customer-Managed Keys via Disk Encryption Set) and SSH private keys; required when enabling disk encryption at rest. | Required (disk encryption) / Optional |
+| [Azure Storage Account](./azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Used for boot diagnostics screenshot storage when boot diagnostics is enabled on the VM. | Optional |
+| [Recovery Services Vault](../platform-landing-zone/recovery-services-vault.md) | `Microsoft.RecoveryServices/vaults` | Manages VM backup policies and recovery points when Azure Backup is enabled for the VM. | Optional |
+
 ## Notes / Considerations
 
 - **`Virtual Machine Contributor`** does NOT grant login access to the VM operating system — OS access is controlled separately by Entra ID login roles or local credentials.

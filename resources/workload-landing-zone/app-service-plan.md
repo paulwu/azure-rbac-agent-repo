@@ -62,6 +62,12 @@ Azure App Service Plan defines the compute resources (VM instances, size, tier) 
 | **Premium V2/V3** | ✅ | ✅ (20) | ✅ | ✅ | ✅ |
 | **Isolated V2 (ASE)** | ✅ | ✅ (20) | ✅ (native) | ✅ | ✅ |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Spoke Virtual Network](./spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides the subnet used for VNet Integration (Standard/Premium/Isolated tiers) enabling outbound traffic routing through the VNet; required for network-isolated deployments. | Required (VNet integration) / Not applicable (Free/Basic) |
+
 ## Notes / Considerations
 
 - **`Web Plan Contributor`** is the purpose-built role for App Service Plan management — it grants `Microsoft.Web/serverfarms/*` permissions without granting app-level access.

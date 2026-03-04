@@ -69,6 +69,15 @@ The Storage Sync Service's managed identity requires the following roles on the 
 | `Storage File Data Privileged Contributor` | Data plane access to read/write/delete files in the Azure File Share. Required for sync operations. |
 | `Reader and Data Access` | Alternative to `Storage Account Contributor` for read-only management plane (list keys). |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Storage Account](../workload-landing-zone/azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Hosts the Azure File Share (cloud endpoint) that acts as the authoritative sync target; at least one storage account with a file share is required per sync group. | Required |
+| [Log Analytics Workspace](./log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives sync session logs and health diagnostics via Diagnostic Settings for monitoring sync activity and troubleshooting conflicts. | Optional |
+| [Hub Virtual Network](./hub-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Hosts Private Endpoints for both the Storage Sync Service and the linked Storage Account to keep sync traffic within the VNet. | Optional (strongly recommended) |
+| [Private DNS Zones](./private-dns-zones.md) | `Microsoft.Network/privateDnsZones` | Resolves the Storage Sync Service private endpoint hostname (`privatelink.afs.azure.net`) within the VNet for private sync connectivity. | Required (if Private Endpoint enabled) |
+
 ## Notes / Considerations
 
 - **`Storage Sync Contributor`** is the purpose-built role for all Azure File Sync management operations — it covers the Storage Sync Service, sync groups, endpoints, and server registration.

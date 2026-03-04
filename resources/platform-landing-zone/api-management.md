@@ -91,6 +91,16 @@ Azure API Management (APIM) is a hybrid, multi-cloud management platform for API
 | APIM managed identity | `Key Vault Certificates Officer` | Key Vault | Read custom domain TLS certificates from Key Vault |
 | CI/CD pipeline | `API Management Service Contributor` | APIM Service | Deploy API definitions and policies via ARM/Bicep |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores Named Value secrets and custom domain TLS certificates; APIM's managed identity retrieves them at runtime using `Key Vault Secrets User` / `Key Vault Certificates Officer`. | Optional |
+| [Log Analytics Workspace](./log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives gateway access logs, request metrics, and diagnostic data via Diagnostic Settings for API analytics and monitoring. | Optional (strongly recommended) |
+| [Hub Virtual Network](./hub-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Required for VNet-integrated APIM (internal or external mode) so the gateway can route to backend services inside the VNet or restrict inbound access to private consumers. | Required (VNet mode) / Not applicable (external-only) |
+| [Private DNS Zones](./private-dns-zones.md) | `Microsoft.Network/privateDnsZones` | Resolves APIM gateway and management endpoint hostnames (`privatelink.azure-api.net`) within the VNet for internal-mode and Private Endpoint deployments. | Required (internal/PE mode) |
+| [Managed Identity](./managed-identity.md) | `Microsoft.ManagedIdentity/userAssignedIdentities` | Provides the identity used by APIM to authenticate to Key Vault, backend services, and other Azure resources without storing credentials. | Optional (required for Key Vault integration) |
+
 ## Notes / Considerations
 
 - **`API Management Service Contributor`** is the primary management role — it covers all API, product, subscription, and policy management.
