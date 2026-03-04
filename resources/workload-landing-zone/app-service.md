@@ -71,6 +71,18 @@ Azure App Service is a fully managed PaaS for hosting web applications, REST API
 | Manage function keys (host / function keys) | Function App | `Website Contributor` | Keys are used for HTTP trigger authentication. |
 | Configure Durable Functions task hub | Function App + Storage | `Website Contributor` + `Storage Blob Data Contributor` | Durable Functions uses Azure Storage for state; the Function App's managed identity needs storage roles. |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [App Service Plan](./app-service-plan.md) | `Microsoft.Web/serverfarms` | Provides the compute (VM instances) that hosts the App Service; required for all hosting models except Flex Consumption. | Required |
+| [Azure SQL Database](./azure-sql-database.md) | `Microsoft.Sql/servers/databases` | Backend relational database; the App Service's managed identity must be added as an Entra ID database user with appropriate role membership (e.g., `db_datareader`, `db_datawriter`). | Optional |
+| [Azure Storage Account](./azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Stores application content, diagnostic logs, and WebJobs; App Service managed identity requires `Storage Blob Data Contributor` for Blob-based content. | Optional |
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Resolves Key Vault References in application settings and connection strings; App Service managed identity requires `Key Vault Secrets User`. | Optional (strongly recommended) |
+| [Azure Container Registry](./azure-container-registry.md) | `Microsoft.ContainerRegistry/registries` | Pulls container images for containerized App Service deployments; App Service managed identity requires `AcrPull`. | Optional (required for container deployments) |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives App Service diagnostic logs (HTTP logs, application logs, failed request traces) via Diagnostic Settings. | Optional (strongly recommended) |
+| [Spoke Virtual Network](./spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides VNet Integration (outbound) and Private Endpoint (inbound) for network-isolated deployments. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **`Website Contributor`** does NOT include App Service Plan management — use `Web Plan Contributor` for plan-level operations, or `Contributor` scoped to the resource group.

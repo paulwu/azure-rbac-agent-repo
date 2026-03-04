@@ -81,6 +81,16 @@ Azure SQL Database is a fully managed relational database PaaS built on SQL Serv
 | Application accessing SQL | Assign Entra ID identity to the app; create a contained database user: `CREATE USER [app-name] FROM EXTERNAL PROVIDER; ALTER ROLE db_datareader ADD MEMBER [app-name];` |
 | Admin access via Entra ID | Set Entra ID admin on the logical server; group-based admin is recommended over individual users. |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores TDE (Transparent Data Encryption) Customer-Managed Key; the SQL Server's managed identity requires `Key Vault Crypto Service Encryption User` on the vault. | Optional (required for CMK-TDE) |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives SQL Database diagnostic logs (SQL Insights, deadlocks, query store runtime stats, errors) via Diagnostic Settings. | Optional (strongly recommended) |
+| [Azure Storage Account](./azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Stores SQL auditing logs and long-term backup retention; the SQL Server managed identity requires `Storage Blob Data Contributor` on the audit storage container. | Optional (required for auditing to storage) |
+| [Spoke Virtual Network](./spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides Private Endpoint connectivity to restrict SQL Server access to the spoke network. | Optional (strongly recommended) |
+| [Private DNS Zones](../platform-landing-zone/private-dns-zones.md) | `Microsoft.Network/privateDnsZones` | Resolves `privatelink.database.windows.net` for Private Endpoint-connected clients. | Required (if Private Endpoint enabled) |
+
 ## Notes / Considerations
 
 - **`SQL DB Contributor`** grants management access but **zero SQL data access** — data access requires T-SQL grants or Entra ID database user creation.

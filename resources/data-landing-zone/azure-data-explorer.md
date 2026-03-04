@@ -93,6 +93,17 @@ Azure Data Explorer (ADX / Kusto) is a fast, fully managed analytics service for
 | Grant/revoke database roles | `Admin` (database) |
 | Full cluster administration | `AllDatabasesAdmin` (cluster) |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Storage Account](../workload-landing-zone/azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Data Explorer ingests data from Blob Storage via LightIngest or external tables; the cluster managed identity requires `Storage Blob Data Reader` on the source storage account. | Optional (required for Blob ingestion) |
+| [Azure Data Lake Storage Gen2](./azure-data-lake-storage-gen2.md) | `Microsoft.Storage/storageAccounts` | ADLS Gen2 as an ingestion source or external table location; cluster managed identity requires `Storage Blob Data Reader`. | Optional |
+| [Azure Event Hubs](./azure-event-hubs.md) | `Microsoft.EventHub/namespaces` | Streaming ingestion source via Event Hub data connection; cluster managed identity requires `Azure Event Hubs Data Receiver` on the Event Hub. | Optional |
+| [Azure Key Vault](../platform-landing-zone/azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores connection credentials for ingestion sources and external table definitions; cluster managed identity requires `Key Vault Secrets User`. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Azure Data Explorer diagnostic logs (ingestion, query, command) via Diagnostic Settings. | Optional (strongly recommended) |
+| [Spoke Virtual Network](../workload-landing-zone/spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides VNet injection for the Data Explorer cluster to isolate ingest and query traffic within the spoke network. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **`AllDatabasesAdmin`** at cluster level is highly privileged — assign only to cluster administrators, not application identities.

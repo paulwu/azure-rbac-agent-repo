@@ -52,6 +52,13 @@ Azure Policy enforces organizational standards and assesses compliance at scale.
 | Trigger an on-demand compliance scan | Subscription | `Resource Policy Contributor` | Via `az policy state trigger-scan` or REST. |
 | Configure Exempt Resources (exemptions) | Resource / Resource Group | `Resource Policy Contributor` | Exemptions are scoped below the assignment. |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Log Analytics Workspace](./log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Policy compliance data and audit logs are sent to Log Analytics when a `deployIfNotExists` or `auditIfNotExists` policy effect is used with Diagnostic Settings enforcement. | Optional |
+| [Managed Identity](./managed-identity.md) | `Microsoft.ManagedIdentity/userAssignedIdentities` | `deployIfNotExists` and `modify` policy effects require a managed identity (system-assigned at policy assignment) with the roles needed to remediate non-compliant resources. | Required (for deployIfNotExists / modify policies) |
+
 ## Notes / Considerations
 
 - **`DeployIfNotExists` and `Modify` effects** require the policy assignment's managed identity to hold sufficient rights on the resources it will remediate. At minimum this is `Contributor` on the target scope.

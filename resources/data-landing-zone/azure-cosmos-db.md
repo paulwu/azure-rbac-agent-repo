@@ -90,6 +90,17 @@ az cosmosdb sql role assignment create \
   --scope "/"
 ```
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Synapse Analytics](./azure-synapse-analytics.md) | `Microsoft.Synapse/workspaces` | Synapse Link (analytical store) enables Synapse Spark and SQL Serverless to read Cosmos DB data without impacting transactional workloads; Synapse managed identity requires `Cosmos DB Built-in Data Reader`. | Optional |
+| [Azure Data Factory](./azure-data-factory.md) | `Microsoft.DataFactory/factories` | ADF pipelines use Cosmos DB as a source or sink for data movement; ADF managed identity requires `Cosmos DB Built-in Data Contributor`. | Optional |
+| [Azure Key Vault](../platform-landing-zone/azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores Cosmos DB connection strings and account keys for consuming applications; consuming application's managed identity requires `Key Vault Secrets User`. | Optional (strongly recommended) |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Cosmos DB diagnostic logs (data plane requests, partition key statistics, control plane operations) via Diagnostic Settings. | Optional (strongly recommended) |
+| [Spoke Virtual Network](../workload-landing-zone/spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides Private Endpoint connectivity to restrict Cosmos DB access to the private network. | Optional (strongly recommended) |
+| [Private DNS Zones](../platform-landing-zone/private-dns-zones.md) | `Microsoft.Network/privateDnsZones` | Resolves `privatelink.documents.azure.com` (and API-specific zones) for Private Endpoint-connected clients. | Required (if Private Endpoint enabled) |
+
 ## Notes / Considerations
 
 - **Disable primary/secondary keys** and use **Entra ID RBAC** for data plane access — keys provide full data access without audit trail.

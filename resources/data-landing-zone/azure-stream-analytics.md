@@ -60,6 +60,17 @@ Azure Stream Analytics is a fully managed real-time analytics service for proces
 | Cosmos DB (output) | `Cosmos DB Built-in Data Contributor` | Write documents |
 | Power BI (output) | Power BI workspace member | Write streaming dataset |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Event Hubs](./azure-event-hubs.md) | `Microsoft.EventHub/namespaces` | Primary event streaming input source; Stream Analytics managed identity requires `Azure Event Hubs Data Receiver` on the Event Hub namespace or specific Event Hub. | Required (event streaming jobs) |
+| [Azure Data Lake Storage Gen2](./azure-data-lake-storage-gen2.md) | `Microsoft.Storage/storageAccounts` | Blob/ADLS Gen2 input (reference data or batch input) and output sink; Stream Analytics managed identity requires `Storage Blob Data Contributor`. | Optional |
+| [Azure Service Bus](../workload-landing-zone/azure-storage-account.md) | `Microsoft.ServiceBus/namespaces` | Service Bus Queue or Topic as an input or output; Stream Analytics managed identity requires `Azure Service Bus Data Receiver` (input) or `Azure Service Bus Data Sender` (output). | Optional |
+| [Azure Cosmos DB](./azure-cosmos-db.md) | `Microsoft.DocumentDB/databaseAccounts` | Cosmos DB output sink for processed event data; Stream Analytics managed identity requires `Cosmos DB Built-in Data Contributor`. | Optional |
+| [Azure SQL Database](../workload-landing-zone/azure-sql-database.md) | `Microsoft.Sql/servers/databases` | SQL Database output sink; Stream Analytics managed identity must be added as an Entra ID user with `db_datawriter` membership. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Stream Analytics job diagnostic logs (execution logs, resource utilization) via Diagnostic Settings. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **No purpose-built RBAC role** exists for Stream Analytics — `Contributor` scoped to the resource group is the minimum.

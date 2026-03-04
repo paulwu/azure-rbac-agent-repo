@@ -86,6 +86,18 @@ AI Landing Zone Subscription
 | Azure Key Vault | `Key Vault Secrets User` | Read connection secrets |
 | Azure Container Registry | `AcrPull` | Pull environment images |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure OpenAI](./azure-openai.md) | `Microsoft.CognitiveServices/accounts` | Hub connection for model serving; Hub's managed identity requires `Cognitive Services OpenAI Contributor` to deploy models and invoke APIs. | Required (if using OpenAI models) |
+| [Azure AI Search](./azure-ai-search.md) | `Microsoft.Search/searchServices` | RAG knowledge retrieval; Hub's managed identity requires `Search Index Data Contributor` to create and query indexes. | Optional |
+| [Azure Storage Account](../workload-landing-zone/azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Stores project data, prompt flow artifacts, and evaluation outputs; Hub's managed identity requires `Storage Blob Data Contributor`. | Required |
+| [Azure Key Vault](../workload-landing-zone/azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores hub connection secrets; Hub's managed identity requires `Key Vault Secrets User` to read secrets at runtime. | Required |
+| [Azure Container Registry](../workload-landing-zone/azure-container-registry.md) | `Microsoft.ContainerRegistry/registries` | Stores custom environment container images; Hub's managed identity requires `AcrPull` to pull images for compute. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives diagnostic logs and metrics via Diagnostic Settings for monitoring Hub and Project activity. | Optional (strongly recommended) |
+| [Spoke Virtual Network](../workload-landing-zone/spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides managed VNet isolation for Hub compute and Private Endpoint connectivity to connected resources. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **`Azure AI Developer`** is the primary role for generative AI application builders — includes the ability to create projects, author prompt flows, run evaluations, and deploy models.

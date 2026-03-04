@@ -50,6 +50,16 @@ Azure Bot Service provides a managed framework for building, deploying, and mana
 | Configure bot endpoint authentication | App Service | `Website Contributor` | The hosting layer (App Service/Functions) is configured separately. |
 | View bot analytics | Bot Service | `Reader` | |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [App Service](../workload-landing-zone/app-service.md) | `Microsoft.Web/sites` | Hosts the bot application logic and exposes the messaging endpoint URL that Bot Service forwards incoming messages to; requires `Website Contributor` for deployment configuration. | Required |
+| [Azure OpenAI](./azure-openai.md) | `Microsoft.CognitiveServices/accounts` | Provides LLM capabilities for the bot's conversational AI responses; the bot's managed identity requires `Cognitive Services OpenAI User` for inference calls. | Optional |
+| [Azure AI Services](./azure-ai-services.md) | `Microsoft.CognitiveServices/accounts` | Provides Language Understanding (CLU/LUIS), Speech, and QnA Maker capabilities for bot NLU and speech recognition; requires `Cognitive Services User`. | Optional |
+| [Azure Key Vault](../workload-landing-zone/azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores the bot's Entra ID app client secret and channel secrets; the App Service hosting the bot requires `Key Vault Secrets User` to resolve Key Vault references at runtime. | Optional (strongly recommended) |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Application Insights telemetry from the bot hosting layer (conversation traces, exceptions, latency) and Bot Service diagnostic logs. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **`Contributor`** scoped to the resource group is the minimum for all Bot Service operations — no purpose-built role exists.

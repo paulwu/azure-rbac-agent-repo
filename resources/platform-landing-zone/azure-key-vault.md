@@ -78,6 +78,14 @@ Azure Key Vault provides centralized secrets management, key management, and cer
 | `Key Vault Certificates Officer` | — | — | Full |
 | `Key Vault Reader` | Metadata only | Metadata only | Metadata only |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Log Analytics Workspace](./log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Key Vault audit logs (secret access, key operations, certificate events) via Diagnostic Settings for security monitoring and compliance. | Optional (strongly recommended) |
+| [Hub Virtual Network](./hub-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides Private Endpoint connectivity to restrict Key Vault access to the hub network for platform-shared vault scenarios. | Optional (strongly recommended) |
+| [Private DNS Zones](./private-dns-zones.md) | `Microsoft.Network/privateDnsZones` | Resolves `privatelink.vaultcore.azure.net` for Private Endpoint-connected clients accessing the vault. | Required (if Private Endpoint enabled) |
+
 ## Notes / Considerations
 
 - **Never use `Key Vault Administrator`** for application identities — assign the narrowest data-plane role (`Secrets User`, `Crypto User`, etc.).

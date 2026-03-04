@@ -75,6 +75,19 @@ ADF uses its system-assigned or user-assigned managed identity to access data so
 | Azure Event Hubs | `Azure Event Hubs Data Receiver` | Consume events |
 | Azure Cosmos DB | `Cosmos DB Built-in Data Contributor` | Read/write documents |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Data Lake Storage Gen2](./azure-data-lake-storage-gen2.md) | `Microsoft.Storage/storageAccounts` | Primary source and sink for data pipelines; ADF managed identity requires `Storage Blob Data Contributor` on the ADLS Gen2 account. | Required (data pipelines) |
+| [Azure Storage Account](../workload-landing-zone/azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Blob and Queue storage sources/sinks for pipelines; ADF managed identity requires `Storage Blob Data Contributor` for Blob and `Storage Queue Data Contributor` for Queue operations. | Optional |
+| [Azure SQL Database](../workload-landing-zone/azure-sql-database.md) | `Microsoft.Sql/servers/databases` | Relational data source or sink for copy and mapping data flow activities; ADF managed identity must be added as an Entra ID user in the database with `db_datareader` / `db_datawriter` membership. | Optional |
+| [Azure Synapse Analytics](./azure-synapse-analytics.md) | `Microsoft.Synapse/workspaces` | Dedicated SQL pool source or sink; ADF managed identity requires Synapse workspace `Synapse SQL Administrator` or database-level user grants. | Optional |
+| [Azure Cosmos DB](./azure-cosmos-db.md) | `Microsoft.DocumentDB/databaseAccounts` | NoSQL source or sink for pipelines; ADF managed identity requires `Cosmos DB Built-in Data Contributor` on the Cosmos DB account. | Optional |
+| [Azure Event Hubs](./azure-event-hubs.md) | `Microsoft.EventHub/namespaces` | Event streaming source for real-time ingestion pipelines; ADF managed identity requires `Azure Event Hubs Data Receiver` on the Event Hub namespace. | Optional |
+| [Azure Key Vault](../platform-landing-zone/azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores linked service credentials and connection strings referenced in pipelines; ADF managed identity requires `Key Vault Secrets User`. | Optional (strongly recommended) |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives ADF diagnostic logs (pipeline runs, activity runs, trigger runs) via Diagnostic Settings. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **`Data Factory Contributor`** does NOT grant access to data within the connected data sources — that requires separate role assignments on each source (see table above).

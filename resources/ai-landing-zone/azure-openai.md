@@ -73,6 +73,17 @@ Azure OpenAI Service provides access to OpenAI's powerful language models (GPT-4
 | Developer (portal access) | `Cognitive Services OpenAI Contributor` | OpenAI Resource | Use Azure OpenAI Studio for testing |
 | Monitoring identity | `Reader` | OpenAI Resource | View deployment configuration and metrics |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure AI Search](./azure-ai-search.md) | `Microsoft.Search/searchServices` | Provides the knowledge retrieval index for On Your Data (RAG) scenarios; the OpenAI resource's managed identity requires `Search Index Data Reader` to query the index at inference time. | Optional (required for RAG / On Your Data) |
+| [Azure Storage Account](../workload-landing-zone/azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Stores fine-tuning training data files; the OpenAI resource's managed identity requires `Storage Blob Data Reader` on the training data container during fine-tuning jobs. | Optional (required for fine-tuning) |
+| [Azure Key Vault](../workload-landing-zone/azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores endpoint URLs and fallback API keys for consuming applications; consuming application's managed identity requires `Key Vault Secrets User`. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives API diagnostic logs (request counts, token usage, latency) via Diagnostic Settings for usage monitoring and cost allocation. | Optional (strongly recommended) |
+| [Spoke Virtual Network](../workload-landing-zone/spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides Private Endpoint connectivity (`privatelink.openai.azure.com`) to restrict API access to the private network. | Optional (strongly recommended) |
+| [Private DNS Zones](../platform-landing-zone/private-dns-zones.md) | `Microsoft.Network/privateDnsZones` | Resolves `privatelink.openai.azure.com` for Private Endpoint-connected clients. | Required (if Private Endpoint enabled) |
+
 ## Notes / Considerations
 
 - **Disable API key authentication** (`disableLocalAuth: true`) and require Entra ID token auth (`Authorization: Bearer <token>`) for all production clients — eliminates key rotation risk.

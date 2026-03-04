@@ -99,6 +99,15 @@ Azure Applied AI Services are higher-level, scenario-specific AI services built 
 | Immersive Reader | `Cognitive Services Immersive Reader User` | `Cognitive Services Contributor` |
 | Video Indexer | `Reader` (view) | `Contributor` (manage/upload) |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Storage Account](../workload-landing-zone/azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Document Intelligence custom model training reads labeled training documents from Blob Storage; the resource's managed identity requires `Storage Blob Data Reader` on the training data container. | Required (Document Intelligence custom models) |
+| [Azure Key Vault](../workload-landing-zone/azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores API keys for consuming applications; `Key Vault Secrets User` required for the application's managed identity when key references are used. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives diagnostic logs and metrics via Diagnostic Settings for monitoring API usage and model training operations. | Optional (strongly recommended) |
+| [Spoke Virtual Network](../workload-landing-zone/spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides Private Endpoint connectivity for Document Intelligence and Anomaly Detector to restrict access to the private network. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **Document Intelligence** custom models require training data in Azure Blob Storage — the resource's managed identity or service principal needs `Storage Blob Data Reader` on the training data container.

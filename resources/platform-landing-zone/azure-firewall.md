@@ -60,6 +60,15 @@ Azure Firewall is a managed, cloud-native network security service deployed in t
 | Configure TLS Inspection (Premium) | Firewall Policy + Key Vault | `Network Contributor` + `Key Vault Certificates Officer` | TLS inspection certificate is stored in Key Vault; firewall uses a managed identity to read it. |
 | Assign managed identity to Firewall | Firewall resource | `Network Contributor` + `Managed Identity Operator` | Required for TLS inspection Key Vault access. |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Hub Virtual Network](./hub-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Azure Firewall is deployed into the `AzureFirewallSubnet` of the hub VNet; the VNet provides the network fabric for traffic routing. | Required |
+| [Azure Firewall Policy](./hub-virtual-network.md) | `Microsoft.Network/firewallPolicies` | Firewall Policy resource manages DNAT, network, and application rule collections; `Network Contributor` on the policy is required to update rules. | Required |
+| [Log Analytics Workspace](./log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Azure Firewall diagnostic logs (application rules, network rules, DNS proxy, IDPS alerts) via Diagnostic Settings for traffic auditing. | Required (strongly recommended) |
+| [Azure Monitor](./azure-monitor.md) | `Microsoft.Insights/components` | Provides alert rules on Firewall threat intelligence events and traffic anomalies. | Optional |
+
 ## Notes / Considerations
 
 - **`Network Contributor`** is broadly scoped — restrict assignments to the specific resource group containing the firewall and its policy.

@@ -110,6 +110,18 @@ Azure Data Lake Storage Gen2 (ADLS Gen2) combines the scalability of Azure Blob 
 
 ---
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Data Factory](./azure-data-factory.md) | `Microsoft.DataFactory/factories` | Orchestrates data ingestion and transformation pipelines reading from and writing to ADLS Gen2; ADF managed identity requires `Storage Blob Data Contributor`. | Optional |
+| [Azure Synapse Analytics](./azure-synapse-analytics.md) | `Microsoft.Synapse/workspaces` | Reads and writes data lake files for Spark and SQL Serverless pool processing; Synapse managed identity requires `Storage Blob Data Contributor`. | Optional |
+| [Azure Databricks](./azure-databricks.md) | `Microsoft.Databricks/workspaces` | Reads and writes data lake files for Spark-based processing; Databricks managed identity or service principal requires `Storage Blob Data Contributor`. | Optional |
+| [Microsoft Purview](./microsoft-purview.md) | `Microsoft.Purview/accounts` | Scans ADLS Gen2 data assets for data catalog and lineage; Purview managed identity requires `Storage Blob Data Reader` on the storage account. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives ADLS Gen2 diagnostic logs (read/write operations, authentication failures) via Diagnostic Settings. | Optional (strongly recommended) |
+| [Spoke Virtual Network](../workload-landing-zone/spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides Private Endpoint connectivity to restrict data lake access to the private network. | Optional (strongly recommended) |
+| [Private DNS Zones](../platform-landing-zone/private-dns-zones.md) | `Microsoft.Network/privateDnsZones` | Resolves `privatelink.dfs.core.windows.net` and `privatelink.blob.core.windows.net` for Private Endpoint-connected clients. | Required (if Private Endpoint enabled) |
+
 ## Notes / Considerations
 
 - **Hierarchical Namespace cannot be enabled after account creation** — it must be set during provisioning (`isHnsEnabled: true`).

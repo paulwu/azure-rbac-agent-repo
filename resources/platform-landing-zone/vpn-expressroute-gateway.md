@@ -62,6 +62,13 @@ VPN Gateway provides encrypted site-to-site, point-to-site, and VNet-to-VNet con
 | View gateway connections and health | Gateway resource | `Reader` | Read-only visibility into connection state and metrics. |
 | Enable VPN Gateway Zone Redundancy | Gateway resource | `Network Contributor` | Must be selected at creation time; cannot be changed later. |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Hub Virtual Network](./hub-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Gateway is deployed into the `GatewaySubnet` of the hub VNet; the subnet must be at least /27 (recommended /27 or larger). | Required |
+| [Log Analytics Workspace](./log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives VPN/ExpressRoute gateway diagnostic logs (tunnel events, BGP route changes, IKE diagnostics) via Diagnostic Settings. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **`GatewaySubnet`** is a reserved subnet name — it must be used exclusively for gateway resources; no other VMs or services can be deployed into it.

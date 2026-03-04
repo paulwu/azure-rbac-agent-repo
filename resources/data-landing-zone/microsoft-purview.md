@@ -113,6 +113,18 @@ The Purview account's managed identity needs read access to scan data sources:
 | Azure Databricks (Unity Catalog) | Unity Catalog `SELECT` privilege | |
 | Azure Key Vault | `Key Vault Secrets User` (for credential scanning) | |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Data Lake Storage Gen2](./azure-data-lake-storage-gen2.md) | `Microsoft.Storage/storageAccounts` | Scanned as a data source for catalog registration and lineage; Purview managed identity requires `Storage Blob Data Reader` on each scanned ADLS Gen2 account. | Optional |
+| [Azure Storage Account](../workload-landing-zone/azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Scanned as a data source for Blob catalog assets; Purview managed identity requires `Storage Blob Data Reader`. | Optional |
+| [Azure SQL Database](../workload-landing-zone/azure-sql-database.md) | `Microsoft.Sql/servers/databases` | Scanned as a data source for SQL schema and lineage; Purview managed identity must be added as a database user with `db_datareader` membership. | Optional |
+| [Azure Synapse Analytics](./azure-synapse-analytics.md) | `Microsoft.Synapse/workspaces` | Scanned for Synapse SQL pool schemas and pipeline lineage; Purview managed identity requires `Reader` on the Synapse workspace and database-level `db_datareader`. | Optional |
+| [Azure Data Factory](./azure-data-factory.md) | `Microsoft.DataFactory/factories` | Lineage extraction from ADF pipelines; ADF must be connected to Purview with the Purview account's managed identity granted `Reader` on ADF. | Optional |
+| [Azure Key Vault](../platform-landing-zone/azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores scan credentials (service principal secrets) for data sources that require non-managed-identity authentication; Purview managed identity requires `Key Vault Secrets User`. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Purview diagnostic logs (scan runs, API requests, governance events) via Diagnostic Settings. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **Collection Admin** at the root collection has full governance control — assign sparingly (data governance team leads only).

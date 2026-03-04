@@ -82,6 +82,15 @@ Azure Container Registry is a managed, private Docker-compatible container regis
 | App Service managed identity | `AcrPull` | Registry | Pull container images for web apps |
 | Image signer identity | `AcrImageSigner` | Registry | Sign images as part of supply chain |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores CMK (Customer-Managed Key) for registry encryption; the registry's managed identity requires `Key Vault Crypto Service Encryption User` on the vault. | Optional (required for CMK encryption) |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives ACR diagnostic logs (repository events, login events, push/pull activity) via Diagnostic Settings. | Optional (strongly recommended) |
+| [Spoke Virtual Network](./spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides Private Endpoint connectivity to restrict registry pull/push access to the private network. | Optional (strongly recommended) |
+| [Private DNS Zones](../platform-landing-zone/private-dns-zones.md) | `Microsoft.Network/privateDnsZones` | Resolves `privatelink.azurecr.io` for Private Endpoint-connected clients pulling images. | Required (if Private Endpoint enabled) |
+
 ## Notes / Considerations
 
 - **Disable the admin account** in production — it provides static credentials that cannot be audited per-user. Use Entra ID roles exclusively.

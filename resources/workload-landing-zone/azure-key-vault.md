@@ -86,6 +86,14 @@ Typical role assignments for a workload application:
 | `Key Vault Certificates Officer` | — | — | Full CRUD |
 | `Key Vault Reader` | List/read metadata | List/read metadata | List/read metadata |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Key Vault audit logs (secret reads, key operations, certificate events) via Diagnostic Settings for security monitoring and compliance auditing. | Optional (strongly recommended) |
+| [Spoke Virtual Network](./spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides Private Endpoint connectivity to restrict Key Vault access to the spoke network for application-team-owned vaults. | Optional (strongly recommended) |
+| [Private DNS Zones](../platform-landing-zone/private-dns-zones.md) | `Microsoft.Network/privateDnsZones` | Resolves `privatelink.vaultcore.azure.net` for Private Endpoint-connected clients. | Required (if Private Endpoint enabled) |
+
 ## Notes / Considerations
 
 - **One Key Vault per workload/application** is the recommended pattern — provides blast radius containment and clear ownership.

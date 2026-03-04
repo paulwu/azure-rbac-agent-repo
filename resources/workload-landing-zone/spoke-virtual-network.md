@@ -52,6 +52,15 @@ A Spoke Virtual Network is the network boundary for a workload subscription. It 
 | Configure Private Endpoints in subnet | Subnet + target resource | `Network Contributor` + resource-specific contributor | Private endpoint creation also requires `Microsoft.Network/privateEndpoints/write`. |
 | Configure Diagnostic Settings (flow logs) | VNet resource | `Monitoring Contributor` | |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Hub Virtual Network](../platform-landing-zone/hub-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides hub-spoke VNet peering for centralized routing, firewall inspection, and shared services access; `Network Contributor` on both hub and spoke is required to establish peering. | Required (hub-spoke topology) |
+| [Azure Firewall](../platform-landing-zone/azure-firewall.md) | `Microsoft.Network/azureFirewalls` | Acts as the next-hop for spoke traffic via a User-Defined Route; the spoke route table must point to the Azure Firewall private IP for centralized traffic inspection. | Optional (required for hub-spoke inspection) |
+| [Private DNS Zones](../platform-landing-zone/private-dns-zones.md) | `Microsoft.Network/privateDnsZones` | Spoke VNet is linked to hub-hosted private DNS zones for Private Endpoint DNS resolution; `Private DNS Zone Contributor` required to create VNet links. | Required (for Private Endpoint DNS resolution) |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives VNet diagnostic logs and NSG Flow Logs via Network Watcher and Diagnostic Settings. | Optional |
+
 ## Notes / Considerations
 
 - **Hub-side peering** must be created by the platform team — workload teams cannot directly create the hub-side peering without access to the platform subscription.

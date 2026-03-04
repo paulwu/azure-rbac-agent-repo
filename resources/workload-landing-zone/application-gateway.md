@@ -58,6 +58,15 @@ Azure Application Gateway is a Layer 7 (HTTP/S) load balancer with SSL terminati
 | Configure Rewrite Rules | App Gateway | `Network Contributor` | HTTP header / URL rewriting. |
 | Enable/disable cookie-based affinity | App Gateway | `Network Contributor` | |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Spoke Virtual Network](./spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Application Gateway is deployed into a dedicated subnet within the spoke VNet; the subnet must be at least /24 for WAF v2. | Required |
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores TLS certificates referenced by HTTPS listeners; the Application Gateway's managed identity requires `Key Vault Certificates User` (and `Key Vault Secrets User` for secret-based cert access) on the vault. | Required (HTTPS listeners) |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Application Gateway diagnostic logs (access logs, performance logs, WAF logs, firewall logs) via Diagnostic Settings. | Optional (strongly recommended) |
+| [Azure Monitor](../platform-landing-zone/azure-monitor.md) | `Microsoft.Insights/components` | Provides alert rules on gateway health metrics (unhealthy backend pools, request failures, WAF rule triggers). | Optional |
+
 ## Notes / Considerations
 
 - **App Gateway v2** (Standard_v2 / WAF_v2) is required for zone-redundancy, autoscaling, Private Link support, and Key Vault certificate integration.

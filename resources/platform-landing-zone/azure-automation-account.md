@@ -69,6 +69,14 @@ Azure Automation provides process automation (runbooks), configuration managemen
 | `Automation Runbook Operator` | ❌ | ❌ | ✅ (specific runbook) | ✅ | ❌ |
 | `Reader` | ❌ | ❌ | ❌ | ❌ | ❌ |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Log Analytics Workspace](./log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Linked workspace enables Update Management, Change Tracking, and Inventory features; runbook job logs and stream output are sent to the workspace. | Optional (required for Update Management / Change Tracking) |
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores runbook credentials and connection secrets; the Automation Account's managed identity requires `Key Vault Secrets User` to retrieve credentials at runtime. | Optional (strongly recommended) |
+| [Hub Virtual Network](./hub-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides Hybrid Runbook Worker VNet connectivity and Private Endpoint support for the Automation Account when public access is disabled. | Optional |
+
 ## Notes / Considerations
 
 - **Managed Identity** (system-assigned or user-assigned) is the recommended way for runbooks to authenticate to Azure resources — replaces the legacy Run As Account.

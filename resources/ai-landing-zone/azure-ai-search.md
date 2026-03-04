@@ -81,6 +81,17 @@ Azure AI Search is a fully managed search-as-a-service platform providing full-t
 | Indexer managed identity (pull-mode) | `Storage Blob Data Reader` | Source storage | Indexer reads source documents |
 | Platform team | `Search Service Contributor` | Search Service | Manage service capacity and network config |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Storage Account](../workload-landing-zone/azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Indexers pull source documents from Blob containers; the Search service's managed identity requires `Storage Blob Data Reader` on the source storage account. | Optional (required for pull-mode indexing) |
+| [Azure Data Lake Storage Gen2](../data-landing-zone/azure-data-lake-storage-gen2.md) | `Microsoft.Storage/storageAccounts` | ADLS Gen2 data source for indexers processing large document corpora; Search managed identity requires `Storage Blob Data Reader`. | Optional |
+| [Azure AI Services](./azure-ai-services.md) | `Microsoft.CognitiveServices/accounts` | Integrated vectorization and AI enrichment skillsets use Azure AI Services for OCR, entity extraction, and embedding generation; requires `Cognitive Services User` on the AI Services resource. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives diagnostic logs (indexer execution, query traffic, throttling) via Diagnostic Settings. | Optional (strongly recommended) |
+| [Spoke Virtual Network](../workload-landing-zone/spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides Private Endpoint connectivity (`privatelink.search.windows.net`) to isolate the search service from public internet access. | Optional (strongly recommended) |
+| [Private DNS Zones](../platform-landing-zone/private-dns-zones.md) | `Microsoft.Network/privateDnsZones` | Resolves `privatelink.search.windows.net` for Private Endpoint-connected clients and indexer connections. | Required (if Private Endpoint enabled) |
+
 ## Notes / Considerations
 
 - **`Search Index Data Reader`** is the minimum for application search — assign to all query-only service principals and managed identities.

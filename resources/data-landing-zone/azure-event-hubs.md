@@ -74,6 +74,17 @@ Azure Event Hubs is a big data streaming platform and event ingestion service. I
 | ADF managed identity | `Azure Event Hubs Data Receiver` | Event Hub | Ingest events into data lake |
 | Event Hub Capture managed identity | `Storage Blob Data Contributor` | Storage account | Write captured events to storage |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Data Lake Storage Gen2](./azure-data-lake-storage-gen2.md) | `Microsoft.Storage/storageAccounts` | Event Hubs Capture writes event stream snapshots to ADLS Gen2 as Avro or Parquet files; Event Hubs managed identity requires `Storage Blob Data Contributor` on the capture storage account. | Optional (required for Capture) |
+| [Azure Storage Account](../workload-landing-zone/azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Stores Event Hubs Capture output files and consumer group checkpoint state; managed identity requires `Storage Blob Data Contributor`. | Optional (required for Capture) |
+| [Azure Stream Analytics](./azure-stream-analytics.md) | `Microsoft.StreamAnalytics/streamingjobs` | Consumes event streams as a Stream Analytics input source; Stream Analytics managed identity requires `Azure Event Hubs Data Receiver` on the namespace or Event Hub. | Optional |
+| [Azure Data Factory](./azure-data-factory.md) | `Microsoft.DataFactory/factories` | Reads Event Hub streams as an ADF pipeline source; ADF managed identity requires `Azure Event Hubs Data Receiver`. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Event Hubs diagnostic logs (archive logs, operational logs, Kafka coordinator logs) via Diagnostic Settings. | Optional (strongly recommended) |
+| [Spoke Virtual Network](../workload-landing-zone/spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides Private Endpoint connectivity to restrict Event Hub access to the private network. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **`Azure Event Hubs Data Sender`** and **`Azure Event Hubs Data Receiver`** can be scoped to either the **namespace** (all event hubs) or individual **event hubs** — prefer event-hub scope for least privilege.

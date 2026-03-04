@@ -112,6 +112,18 @@ Azure Databricks is a managed Apache Spark analytics platform. In a Data Landing
 | Workspace Admin | ✅ | ✅ | ✅ | ✅ |
 | Regular User | ❌ | With cluster permission | With notebook permission | ❌ |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Data Lake Storage Gen2](./azure-data-lake-storage-gen2.md) | `Microsoft.Storage/storageAccounts` | Primary data source and sink for Databricks Spark jobs; the Databricks cluster managed identity (Unity Catalog credential) or service principal requires `Storage Blob Data Contributor`. | Required |
+| [Azure Key Vault](../platform-landing-zone/azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Databricks Secret Scopes backed by Azure Key Vault store cluster credentials and connection strings; the secret scope service principal requires `Key Vault Secrets User`. | Optional (strongly recommended) |
+| [Azure Storage Account](../workload-landing-zone/azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | DBFS root storage and additional Blob sources; the Databricks storage account access connector managed identity requires `Storage Blob Data Contributor`. | Required |
+| [Azure Synapse Analytics](./azure-synapse-analytics.md) | `Microsoft.Synapse/workspaces` | Reads from and writes to Synapse Dedicated SQL Pools via JDBC connector; Databricks cluster identity requires Synapse workspace access or SQL-level user grants. | Optional |
+| [Azure Event Hubs](./azure-event-hubs.md) | `Microsoft.EventHub/namespaces` | Event streaming source for Structured Streaming jobs; cluster managed identity requires `Azure Event Hubs Data Receiver` on the Event Hub namespace. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Databricks cluster diagnostic logs and audit logs via Diagnostic Settings. | Optional (strongly recommended) |
+| [Spoke Virtual Network](../workload-landing-zone/spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides VNet injection for Databricks clusters, isolating all cluster traffic within the spoke network. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **Azure RBAC `Contributor`** on the workspace only grants the ability to open the workspace URL — all workspace actions are controlled by Databricks RBAC.

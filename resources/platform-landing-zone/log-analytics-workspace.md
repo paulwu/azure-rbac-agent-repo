@@ -67,6 +67,13 @@ Log Analytics supports two access control modes:
 
 > **Recommendation**: Use **resource-context** mode in shared Platform workspaces to enforce data isolation across teams.
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores workspace shared keys for agent-based VM onboarding when key-based authentication is used; consuming agents require `Key Vault Secrets User` on the vault. | Optional |
+| [Azure Automation Account](./azure-automation-account.md) | `Microsoft.Automation/automationAccounts` | Linked Automation Account enables Update Management, Change Tracking, and Inventory solutions on top of the workspace. | Optional |
+
 ## Notes / Considerations
 
 - `Log Analytics Contributor` grants read access to all linked Azure Automation Accounts and Azure Storage Accounts configured as data sources — scope carefully.

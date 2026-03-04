@@ -71,6 +71,13 @@ Private DNS Zones provide name resolution for Azure Private Endpoints and intern
 
 > For a full list, see [Azure Private Endpoint DNS configuration](https://learn.microsoft.com/azure/private-link/private-endpoint-dns).
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Hub Virtual Network](./hub-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Private DNS zones must be linked to the hub VNet (and/or spoke VNets) via Virtual Network Links so that DNS resolution is available to all connected resources. | Required |
+| [Log Analytics Workspace](./log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Private DNS Zone query logs via Diagnostic Settings for DNS traffic monitoring and troubleshooting. | Optional |
+
 ## Notes / Considerations
 
 - **`Private DNS Zone Contributor`** is narrower than `Network Contributor` — prefer it for DNS-only operations.

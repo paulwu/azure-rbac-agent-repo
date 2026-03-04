@@ -97,6 +97,18 @@ Azure Synapse Analytics is a unified analytics platform combining big data and d
 | Azure SQL Database | SQL contained database user | External SQL access |
 | Azure Event Hubs | `Azure Event Hubs Data Receiver` | Event ingestion |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Data Lake Storage Gen2](./azure-data-lake-storage-gen2.md) | `Microsoft.Storage/storageAccounts` | Primary data lake storage for Synapse workspace; workspace managed identity requires `Storage Blob Data Contributor` on the default ADLS Gen2 account. | Required |
+| [Azure Storage Account](../workload-landing-zone/azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Additional Blob storage sources for Spark and SQL pool pipelines; Synapse managed identity requires `Storage Blob Data Contributor`. | Optional |
+| [Azure Key Vault](../platform-landing-zone/azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores linked service credentials, CMK for workspace encryption, and connection strings; Synapse managed identity requires `Key Vault Secrets User` (or `Key Vault Crypto Service Encryption User` for CMK). | Optional (strongly recommended) |
+| [Azure Cosmos DB](./azure-cosmos-db.md) | `Microsoft.DocumentDB/databaseAccounts` | NoSQL data source for Spark and SQL Serverless; Synapse managed identity requires `Cosmos DB Built-in Data Reader` for read-only analytical queries via Synapse Link. | Optional |
+| [Azure Data Factory](./azure-data-factory.md) | `Microsoft.DataFactory/factories` | Orchestrates Synapse pipelines from ADF; ADF managed identity requires `Synapse Contributor` on the Synapse workspace to trigger and monitor pipeline runs. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Synapse diagnostic logs (pipeline runs, SQL requests, Spark job metrics) via Diagnostic Settings. | Optional (strongly recommended) |
+| [Spoke Virtual Network](../workload-landing-zone/spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides Synapse Managed Virtual Network and Private Endpoint connectivity for all Synapse runtime components. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **Synapse RBAC is separate from Azure RBAC** — an `Owner` at the Azure level has no Synapse RBAC permissions without an explicit Synapse RBAC assignment.

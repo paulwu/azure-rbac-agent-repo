@@ -80,6 +80,17 @@ Azure Machine Learning (AML) is a platform for building, training, deploying, an
 | Key Vault (default) | `Key Vault Secrets User` | Read workspace secrets |
 | ADLS Gen2 Datastore | `Storage Blob Data Contributor` | Data access for training jobs |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Storage Account](../workload-landing-zone/azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Default datastore for training data, model artifacts, and experiment outputs; the workspace managed identity requires `Storage Blob Data Contributor`. | Required |
+| [Azure Container Registry](../workload-landing-zone/azure-container-registry.md) | `Microsoft.ContainerRegistry/registries` | Stores Docker training and inference environment images; workspace managed identity requires `AcrPull` to pull images for compute runs. | Required |
+| [Azure Key Vault](../workload-landing-zone/azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores workspace secrets (datastore connection strings, service credentials); workspace managed identity requires `Key Vault Secrets User`. | Required |
+| [Azure Data Lake Storage Gen2](../data-landing-zone/azure-data-lake-storage-gen2.md) | `Microsoft.Storage/storageAccounts` | External datastore for large-scale training datasets; job managed identity or workspace managed identity requires `Storage Blob Data Contributor`. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Application Insights training telemetry and workspace diagnostic logs via Diagnostic Settings. | Optional (strongly recommended) |
+| [Spoke Virtual Network](../workload-landing-zone/spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides managed VNet for compute clusters and Private Endpoint connectivity for all workspace linked resources in a private workspace configuration. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **`AzureML Data Scientist`** is the recommended role for data scientists — it provides broad workspace access for experimentation without management-plane control.

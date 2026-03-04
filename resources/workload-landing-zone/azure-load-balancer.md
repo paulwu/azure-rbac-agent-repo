@@ -50,6 +50,13 @@ Azure Load Balancer operates at Layer 4 (TCP/UDP) and distributes inbound traffi
 | View load balancer health and metrics | Load Balancer | `Reader` | |
 | Enable cross-zone load balancing | Load Balancer | `Network Contributor` | |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Spoke Virtual Network](./spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides the VNet and subnets for the Load Balancer frontend IP configuration and backend pool NICs; `Network Contributor` required for frontend IP and subnet configuration. | Required (Internal LB) |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Load Balancer diagnostic logs and health probe metrics via Diagnostic Settings. | Optional |
+
 ## Notes / Considerations
 
 - **Standard SKU** is required for zone-redundancy, VNet peering support, and outbound rule configuration — Basic SKU is deprecated.

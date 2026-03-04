@@ -94,6 +94,17 @@ Azure Kubernetes Service (AKS) is a managed Kubernetes cluster service. It abstr
 | `Azure Kubernetes Service RBAC Writer` | ✅ | ✅ | ❌ | Configurable |
 | `Azure Kubernetes Service RBAC Reader` | ✅ | ❌ | ❌ | Configurable |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Container Registry](./azure-container-registry.md) | `Microsoft.ContainerRegistry/registries` | Provides container images for workloads running in AKS; AKS cluster managed identity (or kubelet identity) requires `AcrPull` on the registry. | Optional (required for ACR image pulls) |
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Secrets Store CSI Driver mounts Key Vault secrets as Kubernetes secrets or volumes; pod workload identity requires `Key Vault Secrets User`. | Optional |
+| [Azure Storage Account](./azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Persistent Volume Claims backed by Azure Files shares; the AKS managed identity or node pool identity requires `Storage File Data SMB Share Contributor`. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives AKS diagnostic logs (API server, audit, scheduler, controller manager) and Container Insights metrics via Diagnostic Settings and the monitoring add-on. | Optional (strongly recommended) |
+| [Spoke Virtual Network](./spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides the VNet and subnet for AKS node pools (Azure CNI or Overlay); AKS managed identity requires `Network Contributor` on the subnet. | Required |
+| [Azure Monitor](../platform-landing-zone/azure-monitor.md) | `Microsoft.Insights/components` | Provides Container Insights dashboards, alert rules for node/pod health, and Prometheus metrics scraping via the Azure Monitor workspace. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **Workload Identity** (OIDC + Azure Workload Identity) is the recommended way for pods to authenticate to Azure services — replaces Pod Identity (deprecated). Assign Azure RBAC roles to the User-Assigned Managed Identity federated with the Kubernetes service account.

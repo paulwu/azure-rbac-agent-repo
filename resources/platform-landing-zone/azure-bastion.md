@@ -67,6 +67,13 @@ Azure Bastion provides secure, browser-based RDP/SSH access to VMs without expos
 | `Virtual Machine User Login` | Target VM resource | Non-privileged login (standard user account) |
 | `Virtual Machine Administrator Login` | Target VM resource | Privileged login (local admin / root) |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Hub Virtual Network](./hub-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Azure Bastion is deployed into the `AzureBastionSubnet` of the hub VNet; the subnet must be at least /27. | Required |
+| [Log Analytics Workspace](./log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives Bastion diagnostic logs (session audit events, connection logs) via Diagnostic Settings for access auditing. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **`Virtual Machine User Login`** and **`Virtual Machine Administrator Login`** use Azure AD (Entra ID) authentication — the VM must have the **Azure AD Login** extension installed (`AADLoginForWindows` / `AADSSHLoginForLinux`).

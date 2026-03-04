@@ -59,6 +59,14 @@ Azure Monitor collects, analyzes, and acts on telemetry from Azure resources. In
 | Configure Private Link for Azure Monitor (AMPLS) | Resource Group | `Network Contributor` + `Monitoring Contributor` | AMPLS resource is `Microsoft.Insights/privateLinkScopes`. |
 | Set alert processing rules (suppression/routing) | Resource Group | `Monitoring Contributor` | Alert processing rules are `Microsoft.AlertsManagement/actionRules`. |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Log Analytics Workspace](./log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Stores and queries metrics, logs, and traces collected by Azure Monitor; Monitor Data Collection Rules route data to Log Analytics as the primary sink. | Required (for log-based alerts and queries) |
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores webhook secrets and notification credentials for Action Groups; consuming automation requires `Key Vault Secrets User`. | Optional |
+| [Azure Automation Account](./azure-automation-account.md) | `Microsoft.Automation/automationAccounts` | Executes runbook-based remediation actions triggered by Azure Monitor alerts via Action Groups. | Optional |
+
 ## Notes / Considerations
 
 - **`Monitoring Contributor`** includes `Monitoring Reader` permissions and is sufficient for all alert / DCR authoring without granting broader resource access.

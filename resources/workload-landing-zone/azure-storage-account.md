@@ -215,6 +215,15 @@ Azure Storage Account is a multi-service storage platform providing Blob, File, 
 
 ---
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Key Vault](./azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores CMK (Customer-Managed Key) for storage encryption; the storage account's managed identity requires `Key Vault Crypto Service Encryption User` on the vault. | Optional (required for CMK encryption) |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives storage diagnostic logs (read/write/delete operations per service) via Diagnostic Settings for auditing and performance analysis. | Optional (strongly recommended) |
+| [Spoke Virtual Network](./spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides service endpoint or Private Endpoint connectivity to restrict storage access to the spoke network. | Optional (strongly recommended) |
+| [Private DNS Zones](../platform-landing-zone/private-dns-zones.md) | `Microsoft.Network/privateDnsZones` | Resolves `privatelink.blob.core.windows.net`, `privatelink.file.core.windows.net`, `privatelink.queue.core.windows.net`, and `privatelink.table.core.windows.net` for Private Endpoint-connected clients. | Required (if Private Endpoint enabled) |
+
 ## Notes / Considerations
 
 - **Never use Storage Account keys in application code** — assign Entra ID data-plane roles to managed identities instead.

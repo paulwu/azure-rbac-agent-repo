@@ -48,6 +48,12 @@ Management Groups provide a governance scope above subscriptions. All subscripti
 | Assign RBAC roles at MG scope | Management group | `User Access Administrator` | Or `Owner`. Required to delegate role assignments within the hierarchy. |
 | Enable tenant-level deployment | Tenant Root | `Owner` (Tenant Root) | Needed to grant `Management Group Contributor` at the tenant root scope. This is a one-time bootstrap operation. |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| None | — | Management Groups are a governance hierarchy construct and have no runtime dependencies on other Azure resources. | — |
+
 ## Notes / Considerations
 
 - The **tenant root management group** ID is the same as the Azure Active Directory (Entra ID) tenant ID.

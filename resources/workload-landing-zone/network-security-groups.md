@@ -53,6 +53,14 @@ Network Security Groups (NSGs) are stateful L3/L4 packet filters applied to subn
 | Read NSG configuration | NSG resource | `Reader` | View-only access to rules and associations. |
 | Configure Diagnostic Settings | NSG resource | `Monitoring Contributor` | Sends NSG event and rule counter logs to Log Analytics / Storage. |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Spoke Virtual Network](./spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | NSGs are associated with subnets or NICs within the spoke VNet; `Network Contributor` on the subnet is required to associate or disassociate an NSG. | Required |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives NSG Flow Logs via Network Watcher for traffic analysis and security investigation. | Optional (strongly recommended) |
+| [Azure Monitor](../platform-landing-zone/azure-monitor.md) | `Microsoft.Insights/components` | Provides alert rules on NSG security event metrics and flow log anomalies. | Optional |
+
 ## Notes / Considerations
 
 - **`Network Contributor`** is the minimum for all NSG operations — there is no purpose-built NSG-specific role.

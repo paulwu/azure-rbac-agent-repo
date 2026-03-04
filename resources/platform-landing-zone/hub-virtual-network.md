@@ -71,6 +71,16 @@ In Enterprise-scale Landing Zones, workload teams provision spoke VNets in their
 
 > **Tip**: Use Azure Policy (`DeployIfNotExists`) with a managed identity to automatically peer new spoke VNets to the hub — the policy assignment's managed identity needs `Network Contributor` on both hub and spoke.
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Firewall](./azure-firewall.md) | `Microsoft.Network/azureFirewalls` | Provides centralized east-west and north-south traffic inspection for all traffic transiting the hub; requires `Network Contributor` on the hub VNet for routing configuration. | Optional (strongly recommended) |
+| [VPN / ExpressRoute Gateway](./vpn-expressroute-gateway.md) | `Microsoft.Network/virtualNetworkGateways` | Provides hybrid connectivity from on-premises networks to the hub; deployed into a dedicated `GatewaySubnet` within the hub VNet. | Optional (required for hybrid connectivity) |
+| [Azure Bastion](./azure-bastion.md) | `Microsoft.Network/bastionHosts` | Provides secure browser-based RDP/SSH access to VMs in hub-connected networks; deployed into the `AzureBastionSubnet` within the hub VNet. | Optional |
+| [Private DNS Zones](./private-dns-zones.md) | `Microsoft.Network/privateDnsZones` | Private DNS zones are linked to the hub VNet so all spoke Private Endpoint DNS resolution routes through hub-linked DNS zones. | Required (for Private Endpoint DNS resolution) |
+| [Log Analytics Workspace](./log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives VNet Flow Logs and NSG diagnostic data via Diagnostic Settings for network traffic analysis. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **Subnet delegation** to services (e.g., `Microsoft.Web/serverFarms` for App Service Integration) is irreversible; the subnet becomes exclusively owned by that service.

@@ -62,6 +62,14 @@ Microsoft Defender for Cloud provides unified security management and advanced t
 | Configure adaptive application controls | Subscription | `Security Admin` | |
 | Manage exemptions from recommendations | Subscription | `Security Admin` | |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Log Analytics Workspace](./log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Defender for Cloud uses a Log Analytics workspace (auto-provisioned or custom) to collect security agent data from monitored resources. | Required |
+| [Azure Policy](./azure-policy.md) | `Microsoft.Authorization/policyAssignments` | Defender for Cloud auto-provisions Azure Policy assignments (Security Center recommendations, compliance standards) to enforce and audit security configurations. | Required |
+| [Azure Monitor](./azure-monitor.md) | `Microsoft.Insights/components` | Provides the alerting and notification layer for Defender security alerts via Azure Monitor alert rules and Action Groups. | Optional |
+
 ## Notes / Considerations
 
 - **`Security Admin`** can change security policies and dismiss alerts but **cannot create or delete Azure resources** — it is not equivalent to `Contributor`.

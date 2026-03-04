@@ -77,6 +77,15 @@ Azure AI Services (formerly Cognitive Services) is a family of pre-built AI serv
 | **Immersive Reader** | `Cognitive Services Immersive Reader User` | `Cognitive Services Contributor` |
 | **Metrics Advisor** | `Cognitive Services Metrics Advisor User` | `Cognitive Services Metrics Advisor Administrator` |
 
+## Runtime Dependencies
+
+| Dependency | Resource Type | Purpose | Required / Optional |
+|---|---|---|---|
+| [Azure Storage Account](../workload-landing-zone/azure-storage-account.md) | `Microsoft.Storage/storageAccounts` | Required by Document Intelligence (Form Recognizer kind) and Custom Vision for training data; service managed identity requires `Storage Blob Data Reader` on training data containers. | Optional (required for custom model training) |
+| [Azure Key Vault](../workload-landing-zone/azure-key-vault.md) | `Microsoft.KeyVault/vaults` | Stores API keys and endpoint URLs for consuming applications when key-based auth is used; `Key Vault Secrets User` required on vault for the consuming application's managed identity. | Optional |
+| [Log Analytics Workspace](../platform-landing-zone/log-analytics-workspace.md) | `Microsoft.OperationalInsights/workspaces` | Receives diagnostic logs and request metrics via Diagnostic Settings for monitoring API usage and service health. | Optional (strongly recommended) |
+| [Spoke Virtual Network](../workload-landing-zone/spoke-virtual-network.md) | `Microsoft.Network/virtualNetworks` | Provides Private Endpoint connectivity to restrict AI Services API access to the private network. | Optional (strongly recommended) |
+
 ## Notes / Considerations
 
 - **`Cognitive Services User`** is the catch-all inference role — use service-specific roles (Speech User, Language Reader, etc.) for finer grained control when single-service accounts are deployed.
