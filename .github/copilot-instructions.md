@@ -12,7 +12,7 @@ After cloning, create the `log/` and `answer/` runtime directories required by t
 make setup
 ```
 
-These directories are gitignored. The agent will fail to write log and answer files if they are missing.
+`log/` is gitignored. `answer/` is tracked in git (answer files are committed so output quality can be compared over time). Both directories must exist locally for the agent to write files.
 
 ---
 
@@ -278,10 +278,23 @@ A Copilot custom agent is defined in `.github/agents/azure-rbac-advisor.agent.md
 Key constraints that apply to the agent (and should not be violated when working in this repo):
 
 - **Read `resources/` files; never modify them.** The agent reads resource files as a reference library — it must not write to or edit any file under `resources/`.
-- **Write output only to `log/` and `answer/`.** These two directories are gitignored runtime output folders. They do not exist in the repo by default; run `mkdir -p log answer` (or `bash setup.sh` / `make setup`) on first use.
+- **Write output only to `log/` and `answer/`.** `log/` is gitignored; `answer/` is tracked in git. These directories may not exist after a fresh clone; run `make setup` to create them.
 - **Never invent role names.** The agent cites roles verbatim from resource files; Copilot authoring assistance must do the same.
 
-When a user invokes the agent (via `/agent` in the CLI or the agent dropdown in VS Code Copilot Chat), it logs every prompt to `log/copilot-log_YYMMDD_HH:MM:SS PST.md` and saves answers to `answer/answer_YYMMDD_HH:MM:SS PST.md`. If these directories are missing, the agent will fail to write — create them with the setup command above.
+When a user invokes the agent (via `/agent` in the CLI or the agent dropdown in VS Code Copilot Chat), it logs every prompt to `log/copilot-log_YYYY-MM-DD_HH-MM-SS PST.md` and saves answers to `answer/answer_YYYY-MM-DD_HH-MM-SS PST.md`. If these directories are missing, the agent will fail to write — create them with the setup command above.
+
+---
+
+## Test Use Cases
+
+The `test/` folder contains reference use cases for validating the Azure RBAC Advisor agent's output quality. Each file has two sections:
+
+- **Section 1 — Prompt**: The exact prompt to send to the agent.
+- **Section 2 — Expected Output**: The reference answer to compare against.
+
+To run a test, select the Azure RBAC Advisor agent and send `run-test @test/use-case-01.md`. The agent extracts the prompt, generates an answer, scores it against expected output, and reports a pass/partial/fail result. Test runs are not logged to `log/` or `answer/`.
+
+When adding new resource files, consider adding a test use case in `test/` if the resource has non-obvious RBAC patterns (e.g., dual management/data plane roles, sub-resource breakdowns).
 
 ---
 
