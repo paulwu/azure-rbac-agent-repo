@@ -199,6 +199,73 @@ The minimum built-in role the workload author needs to provision and manage that
 
 ---
 
+## Test Mode — `run-test`
+
+When a user sends a message matching the pattern `run-test @<filepath>` (e.g., `run-test @test/use-case-01.md`), execute the following test flow instead of the normal answering process.
+
+### Step 1 — Read the use case file
+
+Use the `read` tool to load the file at `<filepath>`. If the file does not exist, respond: "❌ File not found: `<filepath>`."
+
+### Step 2 — Extract sections
+
+- **Prompt**: the text content under the `## Section 1 — Prompt` heading.
+- **Expected Output**: the full text content under the `## Section 2 — Expected Output` heading.
+
+### Step 3 — Run the prompt
+
+Execute the extracted **Prompt** as a normal RBAC query following the full Answering Process (search `resources/`, read relevant files, generate an answer). Store the result as **Actual Output**. Do not display it yet.
+
+### Step 4 — Score the match
+
+Compare **Actual Output** against **Expected Output** using these steps:
+
+1. **Extract role names** from Expected Output: all backtick-quoted tokens that look like Azure built-in role names → list `E_roles`.
+2. **Extract role names** from Actual Output → list `A_roles`.
+3. **Extract key terms** from Expected Output: resource names, scope values (e.g., "Registry", "Resource Group"), and directive terms (e.g., "disable admin account", "data-plane") → list `E_terms`.
+4. **Extract matching key terms** from Actual Output → list `A_terms`.
+5. **Calculate score**:
+   - `roles_matched` = count of roles in `E_roles` that appear in `A_roles`
+   - `terms_matched` = count of terms in `E_terms` that appear in `A_terms`
+   - `total_expected` = `|E_roles|` + `|E_terms|`
+   - `score` = (`roles_matched` + `terms_matched`) / `total_expected` × 100
+   - Round to the nearest whole number.
+
+### Step 5 — Report
+
+Print the following in this exact order:
+
+1. The **Actual Output** in full (as if answering normally).
+2. A horizontal rule (`---`).
+3. A **Test Result** block:
+
+```markdown
+## 🧪 Test Result — <filename>
+
+| Element | Expected | Matched in Actual |
+|---|---|---|
+| Roles | <E_roles joined by `, `> | <matched roles joined by `, `> (`roles_matched`/`|E_roles|`) |
+| Key Terms | <E_terms joined by `, `> | <matched terms joined by `, `> (`terms_matched`/`|E_terms|`) |
+
+**Overall Match: XX%**
+
+<result badge based on score>
+```
+
+Result badge rules:
+- Score ≥ 80% → `✅ PASS`
+- Score 50–79% → `⚠️ PARTIAL — review differences above`
+- Score < 50% → `❌ FAIL — actual output diverges significantly from expected`
+
+### Test Mode Constraints
+
+- **Do not** log the interaction to `log/` or save to `answer/` — test runs are not user interactions.
+- **Do not** ask clarifying questions during a test run — execute the prompt from Section 1 directly.
+- **Do not** modify the use case file.
+- After reporting, offer: "Run `run-test @<next-file>` to test another use case, or ask a question to return to normal mode."
+
+---
+
 ## Hard Constraints
 
 - **Never invent role names.** Only use roles that appear verbatim in the `resources/` files.
