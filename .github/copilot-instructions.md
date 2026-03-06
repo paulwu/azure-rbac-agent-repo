@@ -273,7 +273,7 @@ Use relative paths. Cross-landing-zone links must use `../landing-zone-dir/file.
 
 ## Custom Agents
 
-Two Copilot custom agents are defined in `.github/agents/`:
+Three Copilot custom agents are defined in `.github/agents/`:
 
 ### Azure RBAC Advisor (`azure-rbac-advisor.agent.md`)
 
@@ -302,6 +302,23 @@ Key constraints:
 - **Never skips role verification** — every role name is checked via web fetch before inclusion.
 - **Self-validates** after authoring — runs the full validation pass on its own output before confirming done.
 
+### Azure RBAC Test Runner (`azure-rbac-test-runner.agent.md`)
+
+**Purpose:** Runs test use cases against the `resources/` library and scores output against expected results.
+
+The Test Runner is a dedicated agent that validates RBAC answer quality independently from the Advisor. It uses the same `resources/` grounding rules but operates in its own context — separating the system under test from the test runner.
+
+Two commands:
+
+- **`run-test @test/use-case-01.md`** — Run a single test use case. The agent extracts the prompt, generates an answer, scores it against expected output, and reports ✅ PASS / ⚠️ PARTIAL / ❌ FAIL.
+- **`run-all-tests`** — Batch-run all `test/use-case-*.md` files and produce a summary table.
+
+Key constraints:
+
+- **Read-only access to `resources/` and `test/`** — never modifies reference or test files.
+- **No logging** — test runs do not write to `log/` or `answer/`.
+- **Does not answer general RBAC questions** — redirects users to the Advisor agent.
+
 ---
 
 ## Test Use Cases
@@ -311,7 +328,7 @@ The `test/` folder contains reference use cases for validating the Azure RBAC Ad
 - **Section 1 — Prompt**: The exact prompt to send to the agent.
 - **Section 2 — Expected Output**: The reference answer to compare against.
 
-To run a test, select the Azure RBAC Advisor agent and send `run-test @test/use-case-01.md`. The agent extracts the prompt, generates an answer, scores it against expected output, and reports a pass/partial/fail result. Test runs are not logged to `log/` or `answer/`.
+To run tests, select the **Azure RBAC Test Runner** agent and send `run-test @test/use-case-01.md` for a single test, or `run-all-tests` to batch-run all use cases. The Test Runner generates answers independently using the same `resources/` grounding rules as the Advisor, scores them against expected output, and reports pass/partial/fail results. Test runs are not logged to `log/` or `answer/`.
 
 When adding new resource files, consider adding a test use case in `test/` if the resource has non-obvious RBAC patterns (e.g., dual management/data plane roles, sub-resource breakdowns).
 

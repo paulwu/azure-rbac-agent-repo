@@ -54,7 +54,8 @@ Every resource file documents the least-privileged built-in role needed for **Cr
 ├── .github/
 │   ├── agents/
 │   │   ├── azure-rbac-advisor.agent.md          # RBAC Advisor agent (query mode)
-│   │   └── azure-rbac-knowledge-author.agent.md # Knowledge Author agent (author + validate)
+│   │   ├── azure-rbac-knowledge-author.agent.md # Knowledge Author agent (author + validate)
+│   │   └── azure-rbac-test-runner.agent.md      # Test Runner agent (test use cases)
 │   └── copilot-instructions.md          # Authoring rules for all contributions
 ├── test/
 │   ├── use-case-01.md                   # CI/CD pipeline pushing images to ACR
@@ -310,40 +311,44 @@ The `test/` folder contains reference use cases that validate agent output quali
 
 ### How to Run a Use Case
 
-#### Option 1 — Built-in `run-test` command (recommended)
+#### Option 1 — Azure RBAC Test Runner agent (recommended)
 
-The Azure RBAC Advisor agent has a built-in `run-test` command that automatically extracts the prompt, runs it, scores the output against the expected result, and reports a pass/fail verdict — no manual comparison needed.
+The **Azure RBAC Test Runner** is a dedicated Copilot agent (`.github/agents/azure-rbac-test-runner.agent.md`) purpose-built for test execution. It independently generates answers using the same `resources/` grounding rules as the Advisor, scores them against expected output, and reports pass/fail — with full separation between the system under test and the test runner.
 
-1. **Launch the CLI** and select the Azure RBAC Advisor agent:
+1. **Launch the CLI** and select the **Azure RBAC Test Runner** agent:
    ```bash
    cd azure-rbac-agent-repo
    copilot
-   # then: /agent → Azure RBAC Advisor
+   # then: /agent → Azure RBAC Test Runner
    ```
 
-2. **Select the recommended model** — Claude Opus 4.6 (1M context)(Internal only) — using the model picker.
-
-3. **Run the test** by sending the `run-test` command with the use case file path:
+2. **Run a single test:**
    ```
    run-test @test/use-case-01.md
    ```
 
+3. **Or batch-run all tests:**
+   ```
+   run-all-tests
+   ```
+
 4. The agent will:
    - Read the use case file and extract the prompt from `Section 1`
-   - Execute the prompt as a normal RBAC query against the `resources/` library
+   - Execute the prompt as an RBAC query against the `resources/` library
    - Compare its output against the expected output in `Section 2`
    - Score the match (roles matched + key terms matched) and report a result:
      - **≥ 80%** → `✅ PASS`
      - **50–79%** → `⚠️ PARTIAL`
      - **< 50%** → `❌ FAIL`
+   - For `run-all-tests`, produce a summary table with all results
 
-> **Note:** `run-test` does not log to `log/` or save to `answer/` — test runs are kept separate from normal interactions.
+> **Note:** Test runs do not log to `log/` or save to `answer/` — they are kept separate from normal Advisor interactions.
 
-#### Option 2 — Manual copy-paste
+#### Option 2 — Manual copy-paste via the Advisor
 
-You can also run use cases manually by copying the prompt directly:
+You can also run use cases manually by copying the prompt into the Azure RBAC Advisor agent:
 
-1. **Launch the CLI** and select the Azure RBAC Advisor agent (same as above).
+1. **Launch the CLI** and select the **Azure RBAC Advisor** agent.
 
 2. **Copy the prompt** from `Section 1` of the use case file.
 
