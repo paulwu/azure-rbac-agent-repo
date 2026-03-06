@@ -107,6 +107,10 @@ Use the `write` tool to create this log file **before** generating your answer.
 > Prompt logged: `log/copilot-log_YYYY-MM-DD_HH-MM-SS PST.md`
 > Sources: [list the resource files consulted]
 
+## Original Prompt
+
+<exact user prompt text>
+
 ---
 ```
 
