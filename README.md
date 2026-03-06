@@ -310,7 +310,9 @@ The `test/` folder contains reference use cases that validate agent output quali
 
 ### How to Run a Use Case
 
-Use cases are designed to be copy-pasted directly into the Azure RBAC Advisor agent. To run one:
+#### Option 1 — Built-in `run-test` command (recommended)
+
+The Azure RBAC Advisor agent has a built-in `run-test` command that automatically extracts the prompt, runs it, scores the output against the expected result, and reports a pass/fail verdict — no manual comparison needed.
 
 1. **Launch the CLI** and select the Azure RBAC Advisor agent:
    ```bash
@@ -321,11 +323,33 @@ Use cases are designed to be copy-pasted directly into the Azure RBAC Advisor ag
 
 2. **Select the recommended model** — Claude Opus 4.6 (1M context)(Internal only) — using the model picker.
 
-3. **Copy the prompt** from `Section 1` of the use case file.
+3. **Run the test** by sending the `run-test` command with the use case file path:
+   ```
+   run-test @test/use-case-01.md
+   ```
 
-4. **Paste it** into the agent chat and press Enter.
+4. The agent will:
+   - Read the use case file and extract the prompt from `Section 1`
+   - Execute the prompt as a normal RBAC query against the `resources/` library
+   - Compare its output against the expected output in `Section 2`
+   - Score the match (roles matched + key terms matched) and report a result:
+     - **≥ 80%** → `✅ PASS`
+     - **50–79%** → `⚠️ PARTIAL`
+     - **< 50%** → `❌ FAIL`
 
-5. **Compare** the agent's response against the expected output in `Section 2`.
+> **Note:** `run-test` does not log to `log/` or save to `answer/` — test runs are kept separate from normal interactions.
+
+#### Option 2 — Manual copy-paste
+
+You can also run use cases manually by copying the prompt directly:
+
+1. **Launch the CLI** and select the Azure RBAC Advisor agent (same as above).
+
+2. **Copy the prompt** from `Section 1` of the use case file.
+
+3. **Paste it** into the agent chat and press Enter.
+
+4. **Compare** the agent's response against the expected output in `Section 2` manually.
 
 > **Tip:** Switch to **Autopilot mode** (`Shift+Tab`) before running multi-resource use cases like `use-case-02.md` — the agent will process all 16 resources in a single uninterrupted pass and save the full output to `answer/`.
 
